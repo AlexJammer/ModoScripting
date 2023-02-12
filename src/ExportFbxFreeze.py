@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import lx
 import modo
 import os
@@ -43,16 +44,20 @@ except:
 else:
     output_dir = lx.eval1("dialog.result ?")
 
-    SubdList, PolyList = detect_subd(modo.Scene())  # From the selected models, detect which ones are in sub-d mode and
+    PolyList, SubdList = detect_subd(modo.Scene())  # From the selected models, detect which ones are in sub-d mode and
                                                     # which ones are in polygon mode. Return the lists.
 
     duplicated_list = []
 
     for item in SubdList:
-        lx.eval("item.duplicate")
-        for duplicated_item in modo.Scene().selectedByType("mesh"):
-            lx.eval("poly.freeze face")
-            duplicated_list.append(duplicated_item)
+        new_item = modo.Scene().duplicateItem(item, instance=False)
+        modo.Scene().select(new_item)
+        lx.eval("poly.freeze face")
+        duplicated_list.append(new_item)
+        # lx.eval("item.duplicate")
+        # for duplicated_item in modo.Scene().selectedByType("mesh"):
+        #     lx.eval("poly.freeze face")
+        #     duplicated_list.append(duplicated_item)
 
     SubdList.clear()
 
